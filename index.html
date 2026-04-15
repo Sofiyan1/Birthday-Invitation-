@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>जन्मदिन की हार्दिक शुभकामनाएँ!</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Fredoka+One&family=Noto+Sans+Devanagari:wght@400;700;900&family=Pacifico&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ========================================
+           PARTY DESIGN TOKENS 
+           ======================================== */
+        :root {
+            --primary-pink: #ff477e;
+            --secondary-yellow: #ffcc00;
+            --vibrant-blue: #00d2ff;
+            --soft-white: #ffffff;
+            --party-purple: #9d50bb;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            background-color: #0f0c29;
+            font-family: 'Noto Sans Devanagari', sans-serif;
+            overflow-x: hidden;
+            color: #333;
+        }
+
+        /* --- Dynamic Party Background --- */
+        #party-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: -1;
+            background: linear-gradient(to bottom, #24243e, #302b63, #0f0c29);
+        }
+
+        /* --- GIFT BOX ENTRANCE --- */
+        #entrance-overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            z-index: 10000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0,0,0,0.9);
+            transition: 0.8s ease-out;
+        }
+
+        .gift-box {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            background: var(--primary-pink);
+            cursor: pointer;
+            box-shadow: 0 0 50px var(--primary-pink);
+            animation: shake 0.5s infinite;
+        }
+
+        .gift-box::before {
+            content: "";
+            position: absolute;
+            width: 100%; height: 30px;
+            background: var(--secondary-yellow);
+            top: 50%; transform: translateY(-50%);
+        }
+
+        .gift-box::after {
+            content: "";
+            position: absolute;
+            height: 100%; width: 30px;
+            background: var(--secondary-yellow);
+            left: 50%; transform: translateX(-50%);
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        .gift-text {
+            position: absolute;
+            bottom: -60px;
+            width: 200%;
+            left: -50%;
+            text-align: center;
+            color: white;
+            font-family: 'Fredoka One';
+            letter-spacing: 2px;
+        }
+
+        /* --- MAIN CONTENT AREA --- */
+        #main-content {
+            display: none;
+            width: 100%;
+            padding-bottom: 50px;
+        }
+
+        .content-card {
+            background: var(--soft-white);
+            max-width: 800px;
+            margin: 100px auto;
+            border-radius: 40px;
+            padding: 60px 40px;
+            text-align: center;
+            border: 10px solid var(--secondary-yellow);
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* --- TYPOGRAPHY --- */
+        .bday-title {
+            font-family: 'Pacifico', cursive;
+            font-size: clamp(3rem, 10vw, 5rem);
+            color: var(--primary-pink);
+            text-shadow: 3px 3px var(--secondary-yellow);
+            margin: 20px 0;
+        }
+
+        .hindi-main {
+            font-weight: 900;
+            font-size: 2.5rem;
+            color: var(--party-purple);
+            margin-bottom: 10px;
+        }
+
+        .referral-name {
+            display: inline-block;
+            background: var(--vibrant-blue);
+            color: white;
+            padding: 10px 40px;
+            border-radius: 50px;
+            font-family: 'Bungee';
+            margin-bottom: 20px;
+            transform: rotate(-2deg);
+        }
+
+        /* --- 2D ASSETS --- */
+        .character-box {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .emoji-char {
+            font-size: 80px;
+            animation: float 3s infinite ease-in-out;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-30px) rotate(10deg); }
+        }
+
+        /* --- CONFETTI & BALLOONS --- */
+        .balloon {
+            position: fixed;
+            bottom: -100px;
+            z-index: 5;
+            animation: flyUp linear forwards;
+        }
+
+        @keyframes flyUp {
+            to { transform: translateY(-110vh) rotate(360deg); }
+        }
+
+        .confetti {
+            position: fixed;
+            width: 10px; height: 10px;
+            z-index: 10001;
+            animation: fall linear forwards;
+        }
+
+        @keyframes fall {
+            to { transform: translateY(110vh) rotate(720deg); }
+        }
+
+        /* --- INFO BOXES --- */
+        .info-box {
+            background: #fff8e1;
+            border: 3px dashed var(--primary-pink);
+            padding: 30px;
+            border-radius: 20px;
+            margin: 30px 0;
+        }
+
+        .btn-party {
+            background: var(--primary-pink);
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 20px;
+            transition: 0.3s;
+        }
+
+        .btn-party:hover { transform: scale(1.1) rotate(3deg); }
+
+        /* --- REVEAL --- */
+        .reveal { opacity: 0; transform: scale(0.8); transition: 1s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .reveal.active { opacity: 1; transform: scale(1); }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 50px;
+            font-family: 'Pacifico';
+        }
+    </style>
+</head>
+<body>
+
+    <canvas id="party-canvas"></canvas>
+
+    <div id="entrance-overlay">
+        <div class="gift-box" id="giftBox">
+            <div class="gift-text">इसे खोलें! (OPEN ME)</div>
+        </div>
+    </div>
+
+    <div id="main-content">
+        
+        <section class="content-card reveal">
+            <div class="referral-name" id="guest-name">बर्थडे बॉय/गर्ल</div>
+            <h1 class="bday-title">Happy Birthday!</h1>
+            <h2 class="hindi-main">जन्मदिन की बहुत-बहुत बधाई</h2>
+            
+            <div class="character-box">
+                <div class="emoji-char">🎂</div>
+                <div class="emoji-char" style="animation-delay: 0.5s;">🎉</div>
+                <div class="emoji-char" style="animation-delay: 1s;">🎁</div>
+            </div>
+
+            <p style="font-size: 1.2rem; line-height: 1.8; color: #555;">
+                जीवन का हर पल खुशियों से भरा हो, <br>
+                आपका हर सपना सच हो और आप हमेशा मुस्कुराते रहें!
+            </p>
+
+            <div style="margin-top: 50px; animation: float 2s infinite;">
+                <p style="font-size: 12px; font-weight: bold;">नीचे स्क्रॉल करें</p>
+                <span>▼</span>
+            </div>
+        </section>
+
+        <section class="content-card reveal">
+            <h2 class="hindi-main" style="color: var(--primary-pink);">पार्टी का समय! 🎉</h2>
+            
+            <div class="info-box">
+                <h3 style="font-size: 1.8rem; margin-bottom: 10px;">तारीख और समय</h3>
+                <p><b>15 अगस्त, 2026 | शनिवार</b></p>
+                <p>शाम 07:00 बजे से पार्टी शुरू</p>
+            </div>
+
+            <div class="info-box" style="border-color: var(--vibrant-blue);">
+                <h3 style="font-size: 1.8rem; margin-bottom: 10px;">पार्टी का स्थान</h3>
+                <p><b>पार्टी विला, बोरिंग रोड, पटना</b></p>
+                <p>नजदीक: मौर्या लोक कॉम्प्लेक्स</p>
+                <a href="#" class="btn-party">मैप पर देखें 📍</a>
+            </div>
+        </section>
+
+        <section class="content-card reveal">
+            <div class="emoji-char" style="font-size: 100px;">🍕</div>
+            <h2 class="hindi-main">ढेर सारा खाना और मस्ती!</h2>
+            <p style="margin: 20px 0;">आपका आना हमारे लिए सबसे बड़ा तोहफा होगा। तैयार होकर आइयेगा, क्योंकि डांस फ्लोर आपका इंतज़ार कर रहा है!</p>
+            
+            <div style="margin-top: 30px;">
+                <p style="color: #888;">आमंत्रणकर्ता:</p>
+                <h3 style="font-size: 1.5rem; color: var(--party-purple);">राहुल और पूरा परिवार</h3>
+            </div>
+        </section>
+
+        <footer>
+            <p>#RahulBirthdayBash2026</p>
+            <p style="font-size: 10px; opacity: 0.6; margin-top: 10px;">Made with ❤️ for the Party</p>
+        </footer>
+    </div>
+
+    <script>
+        /* --- 1. PARTY PARTICLES (CANVAS) --- */
+        const canvas = document.getElementById('party-canvas');
+        const ctx = canvas.getContext('2d');
+        let dots = [];
+
+        function init() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            dots = [];
+            for(let i=0; i<100; i++) {
+                dots.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    size: Math.random() * 3,
+                    color: `hsl(${Math.random() * 360}, 70%, 70%)`,
+                    speed: Math.random() * 2 + 1
+                });
+            }
+        }
+
+        function draw() {
+            ctx.clearRect(0,0,canvas.width, canvas.height);
+            dots.forEach(d => {
+                ctx.fillStyle = d.color;
+                ctx.beginPath();
+                ctx.arc(d.x, d.y, d.size, 0, Math.PI*2);
+                ctx.fill();
+                d.y += d.speed;
+                if(d.y > canvas.height) d.y = -10;
+            });
+            requestAnimationFrame(draw);
+        }
+        window.onresize = init;
+        init(); draw();
+
+        /* --- 2. GIFT BOX POP LOGIC --- */
+        const gift = document.getElementById('giftBox');
+        const overlay = document.getElementById('entrance-overlay');
+        const content = document.getElementById('main-content');
+
+        gift.onclick = () => {
+            // Explode effect
+            gift.style.transform = "scale(5)";
+            gift.style.opacity = "0";
+            createConfetti(100);
+            
+            setTimeout(() => {
+                overlay.style.opacity = "0";
+                setTimeout(() => {
+                    overlay.style.display = "none";
+                    content.style.display = "block";
+                    startBalloons();
+                    reveal();
+                }, 800);
+            }, 500);
+        };
+
+        /* --- 3. REFERRAL NAME --- */
+        const naam = new URLSearchParams(window.location.search).get('name');
+        if(naam) {
+            document.getElementById('guest-name').innerText = "HAPPY BIRTHDAY " + naam.toUpperCase() + "!";
+        }
+
+        /* --- 4. BALLOONS & CONFETTI SYSTEM --- */
+        function startBalloons() {
+            const bIcons = ['🎈', '✨', '🧁', '⭐', '🍭'];
+            setInterval(() => {
+                const b = document.createElement('div');
+                b.className = 'balloon';
+                b.innerText = bIcons[Math.floor(Math.random()*bIcons.length)];
+                b.style.left = Math.random() * 100 + "vw";
+                b.style.fontSize = Math.random()*30 + 20 + "px";
+                b.style.animationDuration = Math.random()*4 + 3 + "s";
+                document.body.appendChild(b);
+                setTimeout(() => b.remove(), 7000);
+            }, 600);
+        }
+
+        function createConfetti(count) {
+            const colors = ['#ff477e', '#ffcc00', '#00d2ff', '#9d50bb'];
+            for(let i=0; i<count; i++) {
+                const c = document.createElement('div');
+                c.className = 'confetti';
+                c.style.background = colors[Math.floor(Math.random()*colors.length)];
+                c.style.left = Math.random() * 100 + "vw";
+                c.style.top = "-10px";
+                c.style.animationDuration = Math.random()*2 + 1 + "s";
+                c.style.width = Math.random()*10 + 5 + "px";
+                c.style.height = c.style.width;
+                document.body.appendChild(c);
+                setTimeout(() => c.remove(), 3000);
+            }
+        }
+
+        /* --- 5. SCROLL REVEAL --- */
+        function reveal() {
+            document.querySelectorAll('.reveal').forEach(el => {
+                if(el.getBoundingClientRect().top < window.innerHeight - 100) {
+                    el.classList.add('active');
+                }
+            });
+        }
+        window.onscroll = reveal;
+
+        /* --- 6. CLICK POP EFFECT --- */
+        window.onclick = (e) => {
+            if(content.style.display == "block") {
+                const p = document.createElement('div');
+                p.innerText = '🎈';
+                p.style.position = 'fixed';
+                p.style.left = e.clientX + 'px';
+                p.style.top = e.clientY + 'px';
+                p.style.fontSize = '30px';
+                p.style.pointerEvents = 'none';
+                document.body.appendChild(p);
+                
+                let y = 0;
+                const i = setInterval(() => {
+                    if(y == 100) { clearInterval(i); p.remove(); }
+                    else { y++; p.style.top = (e.clientY - y) + 'px'; p.style.opacity = 1 - y/100; }
+                }, 10);
+            }
+        };
+    </script>
+</body>
+</html>
